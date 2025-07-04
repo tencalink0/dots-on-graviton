@@ -10,11 +10,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const shapeCoords = [
         new Point(200, 150),
         new Point(300, 150),
-        new Point(400, 250)
+        new Point(400, 250),
+        new Point(600, 250)
     ];
 
     const materialCoords = [
-        new Point(300, 200)
+        new Point(300, 200, false),
+        new Point(350, 300, false),
+        new Point(400, 350, false)
     ];
 
     scene.screen();

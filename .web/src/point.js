@@ -1,3 +1,5 @@
+import { distanceFromEdge } from "./render";
+
 export default class Point {
     x;
     originalY;
@@ -32,10 +34,6 @@ export default class Point {
 
             requestAnimationFrame(animate);
         }
-        
-        setTimeout(() => {
-            this.moving = false;
-        }, 4000);
 
         requestAnimationFrame(animate);
     }
