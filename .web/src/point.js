@@ -1,5 +1,3 @@
-import { distanceFromEdge } from "./render";
-
 export default class Point {
     x;
     originalY;

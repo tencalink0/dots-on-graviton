@@ -54,8 +54,10 @@ export default class Scene {
             for (let i = 0; i < verticesPairs.length; i++) {
                 const [pointA, pointB] = verticesPairs[i];
                 
-                if (distanceFromEdge(coord, pointA, pointB) < 6) {
-                    console.log(distanceFromEdge(coord, pointA, pointB), pointA, pointB)
+                const distance = distanceFromEdge(coord, pointA, pointB);
+                if (distance === false) return;
+                if (distance < 6) {
+                    // console.log(distance, pointA, pointB);
                     coord.moving = false; 
                     break;
                 }
@@ -72,21 +74,97 @@ export function distanceFromEdge(
     l1,
     l2
 ) {
-    const gradient = (l2.y - l1.y)/(l2.x - l1.x);
-    const [a, b, c] = [
-        -gradient, 
-        1, 
-        (gradient * l1.x) - l1.y
-    ];
-    return distanceFromLine(p, a, b, c);
+    const dx = l2.x - l1.x;
+    const dy = l2.y - l1.y;
+
+    let gradient;
+    if (dx === 0) {
+        gradient = Infinity; // vertical line
+    } else {
+        gradient = dy / dx;
+    }
+
+    let a1, b1, c1;
+    if (gradient === Infinity) {
+        // vertical line
+        a1 = 1;
+        b1 = 0;
+        c1 = -l1.x;
+    } else {
+        a1 = -gradient;
+        b1 = 1;
+        c1 = -(a1 * l1.x + b1 * l1.y);
+    }
+
+    let a2, b2, c2;
+    if (gradient === 0) {
+        // horizontal line ⇒ normal is vertical
+        a2 = 1;
+        b2 = 0;
+        c2 = -p.x;
+    } else if (gradient === Infinity) {
+        // vertical line ⇒ normal is horizontal
+        a2 = 0;
+        b2 = 1;
+        c2 = -p.y;
+    } else {
+        const normal = -1 / gradient;
+        a2 = -normal;
+        b2 = 1;
+        c2 = -(a2 * p.x + b2 * p.y);
+    }
+
+    const eq1 = [a1, b1, c1];
+    const eq2 = [a2, b2, c2];
+
+    console.log(eq1, eq2);
+
+    const inline = checkInline(eq1, eq2, l1, l2);
+    if (!inline) return false;
+
+    return distanceFromLine(p, eq1);
 }
 
-function distanceFromLine(
-    p,
-    a,
-    b,
-    c
+function checkInline(
+    eq1,
+    eq2,
+    l1, 
+    l2
 ) {
+    const intersectCoord = getIntersectCoord(eq1, eq2);
+    if (intersectCoord === false) return false;
+
+    const xmin = Math.min(l1.x, l2.x);
+    const xmax = Math.max(l1.x, l2.x);
+    const ymin = Math.min(l1.y, l2.y);
+    const ymax = Math.max(l1.y, l2.y);
+
+    return (
+        intersectCoord.x >= xmin && 
+        intersectCoord.x <= xmax && 
+        intersectCoord.y >= ymin && 
+        intersectCoord.y <= ymax
+    );
+}
+
+function getIntersectCoord(eq1, eq2) {
+    const [a1, b1, c1] = eq1;
+    const [a2, b2, c2] = eq2;
+
+    const determinant = (a1 * b2) - (a2 * b1);
+    if (determinant === 0) return false; // not inline
+
+    const x = (b1 * c2 - b2 * c1) / determinant;
+    const y = (a2 * c1 - a1 * c2) / determinant;
+
+    return {
+        x: x,
+        y: y
+    };
+}
+
+function distanceFromLine(p, eq1) {
+    const [a, b, c] = eq1;
     return Math.abs(
         (a * p.x) + (b * p.y) + c
     ) / Math.sqrt(

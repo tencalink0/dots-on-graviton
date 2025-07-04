@@ -17,7 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const materialCoords = [
         new Point(300, 200, false),
         new Point(350, 300, false),
-        new Point(400, 350, false)
+        new Point(400, 350, false),
+        new Point(500, 400, false)
     ];
 
     scene.screen();
