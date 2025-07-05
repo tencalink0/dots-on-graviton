@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         new Point(200, 150),
         new Point(300, 150),
         new Point(400, 250),
+        new Point(500, 320),
         new Point(600, 250)
     ];
 
@@ -18,7 +19,9 @@ document.addEventListener('DOMContentLoaded', () => {
         new Point(300, 200, false),
         new Point(350, 300, false),
         new Point(400, 350, false),
-        new Point(500, 400, false)
+        new Point(480, 400, false),
+        new Point(500, 400, false),
+        new Point(600, 400, false)
     ];
 
     scene.screen();
